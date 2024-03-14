@@ -2,7 +2,7 @@ module github.com/szippy/xk6-exec
 
 go 1.21.1
 
-require go.k6.io/k6 v0.49.0
+// require go.k6.io/k6 v0.49.0
 
 require (
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
