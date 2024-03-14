@@ -2,6 +2,8 @@
 package exec
 
 import (
+	"fmt"
+	"io"
 	"log"
 	"os/exec"
 	"strings"
@@ -56,4 +58,54 @@ func (*EXEC) Command(name string, args []string, option CommandOptions) string {
 		log.Fatal(err.Error() + " on command: " + name + " " + strings.Join(args, " "))
 	}
 	return string(out)
+}
+
+func (*EXEC) PipeCommand(name1 string, args1 []string, name2 string, args2 []string, option CommandOptions) string {
+	// ex ls -l | grep "go"
+	//name1 = "ls"
+	//args1 = []string{"-l"}
+	//name2 = "grep"
+	//args2 = []string{"go"}
+	// set the command before the pipe
+	cmd1 := exec.Command(name1, args1...)
+	if option.Dir != "" {
+		cmd1.Dir = option.Dir
+	}
+
+	fmt.Print("Command 1: ")
+	fmt.Print(cmd1)
+
+	// set the command after the pipe
+	cmd2 := exec.Command(name2, args2...)
+	if option.Dir != "" {
+		cmd2.Dir = option.Dir
+	}
+
+	fmt.Print("Command 2: ")
+	fmt.Print(cmd2)
+
+	// Get the output of the command that runs after the pipe and connect it as input to first command
+	cmd2.Stdin, _ = cmd1.StdoutPipe()
+
+	// Get the output of the second command
+	cmd2Output, _ := cmd2.StdoutPipe()
+
+	// Start both commands
+	_ = cmd2.Start()
+	_ = cmd1.Start()
+
+	// Read the output of the second command
+	cmd2Result, err := io.ReadAll(cmd2Output)
+	if err != nil {
+		fmt.Printf("Error reading command output: %v\n", err)
+	}
+
+	// Wait for both commands to finish
+	_ = cmd1.Wait()
+	_ = cmd2.Wait()
+
+	// Print the final result
+	fmt.Printf("Result:\n%s\n", cmd2Result)
+
+	return string(cmd2Result)
 }

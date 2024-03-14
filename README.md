@@ -2,6 +2,7 @@
 
 This is a [k6](https://go.k6.io/k6) extension using the
 [xk6](https://github.com/grafana/xk6) system.
+This fork allows you to use multiple commands with a pipe.
 
 ## Build
 
@@ -18,8 +19,13 @@ Then:
   ```
 
 2. Build the binary:
-  ```shell
-  xk6 build --with github.com/grafana/xk6-exec@latest
+  ```
+  shell
+  xk6 build --with github.com/szippy/xk6-exec@latest
+  ```
+  Building local changes: 
+  ```
+  xk6 build --with xk6-exec=.
   ```
 
 ## Development
@@ -41,7 +47,11 @@ import exec from 'k6/x/exec';
 
 export default function () {
   console.log(exec.command("date"));
-  console.log(exec.command("ls",["-a","-l"]));
+  console.log(exec.command("ls",["-a","-l"], {
+    "dir": "sub-directory" // optional directory in which the command has to be run
+  }));
+
+  console.log(exec.pipeCommand("ls", ["-l", "a"], "grep", ["go"]));
 }
 ```
 
