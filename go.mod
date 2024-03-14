@@ -1,6 +1,6 @@
 module github.com/szippy/xk6-exec
 
-go 1.19
+go 1.21.1
 
 require go.k6.io/k6 v0.49.0
 
@@ -21,10 +21,10 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mstoykov/atlas v0.0.0-20220811071828-388f114305dd // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
-	github.com/onsi/gomega v1.27.6 // indirect
+	github.com/onsi/gomega v1.31.1 // indirect
 	github.com/serenize/snaker v0.0.0-20201027110005-a7ad2135616e // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
-	github.com/spf13/afero v1.9.5 // indirect
+	github.com/spf13/afero v1.1.2 // indirect
 	go.opentelemetry.io/otel v1.21.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.21.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.21.0 // indirect
@@ -41,5 +41,5 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231002182017-d307bd883b97 // indirect
 	google.golang.org/grpc v1.60.0 // indirect
 	google.golang.org/protobuf v1.31.1-0.20231027082548-f4a6c1f6e5c1 // indirect
-	gopkg.in/guregu/null.v3 v3.5.0 // indirect
+	gopkg.in/guregu/null.v3 v3.3.0 // indirect
 )
