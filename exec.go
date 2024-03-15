@@ -56,6 +56,7 @@ func (*EXEC) Command(name string, args []string, option CommandOptions) string {
 	out, err := cmd.Output()
 	if err != nil {
 		log.Fatal(err.Error() + " on command: " + name + " " + strings.Join(args, " "))
+		return string(err.Error())
 	}
 	return string(out)
 }
@@ -98,6 +99,7 @@ func (*EXEC) PipeCommand(name1 string, args1 []string, name2 string, args2 []str
 	cmd2Result, err := io.ReadAll(cmd2Output)
 	if err != nil {
 		fmt.Printf("Error reading command output: %v\n", err)
+		return string(err.Error())
 	}
 
 	// Wait for both commands to finish
