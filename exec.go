@@ -4,7 +4,6 @@ package exec
 import (
 	"fmt"
 	"io"
-	"log"
 	"os/exec"
 	"strings"
 
@@ -49,15 +48,21 @@ func (exec *EXEC) Exports() modules.Exports {
 
 // Command is a wrapper for Go exec.Command
 func (*EXEC) Command(name string, args []string, option CommandOptions) string {
+	fmt.Print("EXEC COMMAND")
 	cmd := exec.Command(name, args...)
 	if option.Dir != "" {
 		cmd.Dir = option.Dir
 	}
+	// print output
 	out, err := cmd.Output()
+	fmt.Print("Process Output: ")
+	fmt.Print(string(out))
 	if err != nil {
-		log.Fatal(err.Error() + " on command: " + name + " " + strings.Join(args, " "))
+		fmt.Print(string(err.Error()))
+		fmt.Printf(string(err.Error()) + " on command: " + name + " " + strings.Join(args, " "))
 		return string(err.Error())
 	}
+	fmt.Print(out)
 	return string(out)
 }
 
