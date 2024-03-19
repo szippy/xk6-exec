@@ -48,22 +48,21 @@ func (exec *EXEC) Exports() modules.Exports {
 
 // Command is a wrapper for Go exec.Command
 func (*EXEC) Command(name string, args []string, option CommandOptions) string {
-	fmt.Print("EXEC COMMAND")
 	cmd := exec.Command(name, args...)
 	if option.Dir != "" {
 		cmd.Dir = option.Dir
 	}
-	// print output
-	out, err := cmd.Output()
-	fmt.Print("Process Output: ")
-	fmt.Print(string(out))
+
+	out, err := cmd.CombinedOutput()
+	//fmt.Print("Process Output: ")
+	//fmt.Print(string(out))
 
 	if err != nil {
 		fmt.Print("ERROR: ")
 		fmt.Printf(string(err.Error()) + " on command: " + name + " " + strings.Join(args, " "))
 	}
+
 	return string(out)
-	// get right pipe.
 }
 
 func (*EXEC) PipeCommand(name1 string, args1 []string, name2 string, args2 []string, option CommandOptions) string {
