@@ -57,13 +57,13 @@ func (*EXEC) Command(name string, args []string, option CommandOptions) string {
 	out, err := cmd.Output()
 	fmt.Print("Process Output: ")
 	fmt.Print(string(out))
+
 	if err != nil {
-		fmt.Print(string(err.Error()))
+		fmt.Print("ERROR: ")
 		fmt.Printf(string(err.Error()) + " on command: " + name + " " + strings.Join(args, " "))
-		return string(err.Error())
 	}
-	fmt.Print(out)
 	return string(out)
+	// get right pipe.
 }
 
 func (*EXEC) PipeCommand(name1 string, args1 []string, name2 string, args2 []string, option CommandOptions) string {
