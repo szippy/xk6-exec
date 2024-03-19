@@ -102,9 +102,13 @@ func (*EXEC) PipeCommand(name1 string, args1 []string, name2 string, args2 []str
 
 	// Read the output of the second command
 	cmd2Result, err := io.ReadAll(cmd2Output)
+
+	fmt.Print("Process Output: ")
+	fmt.Print(string(cmd2Result))
+
 	if err != nil {
-		fmt.Printf("Error reading command output: %v\n", err)
-		return string(err.Error())
+		fmt.Print("ERROR: ")
+		fmt.Printf(string(err.Error()) + " on command: " + name2 + " " + strings.Join(args2, " "))
 	}
 
 	// Wait for both commands to finish
