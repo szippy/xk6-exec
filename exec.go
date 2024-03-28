@@ -11,7 +11,6 @@ import (
 	"go.k6.io/k6/js/modules"
 )
 
-// xk6 build --with xk6-exec=. --with github.com/LeonAdato/xk6-output-statsd
 func init() {
 	modules.Register("k6/x/exec", new(RootModule))
 }
