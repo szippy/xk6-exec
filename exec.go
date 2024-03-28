@@ -2,6 +2,7 @@
 package exec
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"os/exec"
@@ -10,6 +11,7 @@ import (
 	"go.k6.io/k6/js/modules"
 )
 
+// xk6 build --with xk6-exec=. --with github.com/LeonAdato/xk6-output-statsd
 func init() {
 	modules.Register("k6/x/exec", new(RootModule))
 }
@@ -44,6 +46,87 @@ func (*RootModule) NewModuleInstance(vu modules.VU) modules.Instance {
 // of the JS module.
 func (exec *EXEC) Exports() modules.Exports {
 	return modules.Exports{Default: exec}
+}
+
+func (*EXEC) EnterCommandOnOutput(name string, args []string, outputSearchArray []string, input string) []string {
+	// enterCommandOnOutput
+	// name, args.
+	// outputSearchArray
+	var outputArray []string
+
+	fmt.Print(outputSearchArray)
+
+	cmd := exec.Command(name, args...)
+	fmt.Println("Starting Initial Command")
+	fmt.Println(cmd)
+
+	fmt.Println("Starting Standard In Pipe")
+	stdin, err := cmd.StdinPipe()
+	if err != nil {
+		fmt.Println("Error getting stdin:", err)
+		outputArray = append(outputArray, string(err.Error()))
+		return outputArray
+	}
+	fmt.Println(stdin)
+
+	fmt.Println("Starting Standard Out Pipe")
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		fmt.Println("Error getting stdout:", err)
+		outputArray = append(outputArray, string(err.Error()))
+		return outputArray
+	}
+	fmt.Println(stdout)
+
+	fmt.Println("Starting Start Command")
+	if err := cmd.Start(); err != nil {
+		fmt.Println("Error starting the command:", err)
+		outputArray = append(outputArray, string(err.Error()))
+		return outputArray
+	}
+
+	// output to search for array
+	// thing to input
+	fmt.Println("Starting Scanner")
+	fmt.Println("Output Search Array:", outputSearchArray)
+
+	scanner := bufio.NewScanner(stdout)
+	for scanner.Scan() {
+		line := scanner.Text()
+		fmt.Println(line) // Print the output received from the process
+
+		for _, search := range outputSearchArray {
+			if strings.Contains(line, search) {
+				fmt.Println("Found:", search)
+				goto endScan // Use label to break out of the outer loop
+			}
+		}
+	}
+
+endScan:
+
+	fmt.Println("Starting Write")
+	if _, err := stdin.Write([]byte(input + "\n")); err != nil {
+		fmt.Println("Error writing to stdin:", err)
+		outputArray = append(outputArray, string(err.Error()))
+		return outputArray
+	}
+
+	stdin.Close()
+	fmt.Println("Closed")
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		//fmt.Println(line) // Print the output received from the process
+		outputArray = append(outputArray, line)
+
+	}
+	if err := cmd.Wait(); err != nil {
+		fmt.Println("Command finished with error (This does not always mean a failure):", err)
+	}
+
+	return outputArray
+
 }
 
 // Command is a wrapper for Go exec.Command
